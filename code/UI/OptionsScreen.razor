@@ -61,15 +61,15 @@
                                         </div>
                                     </div>
                                 }
-                                @if (element is UIDropDownBase)
+                                @if (element is UICyclerBase)
                                 {
-                                    var dropDownElement = (UIDropDownBase)element;
+                                    var cyclerElement = (UICyclerBase)element;
                                     <div class="column value">
                                         <div class="cycling-selector">
                                             <div class="cycling-controls">
-                                                <button class="arrow left" onclick="@(() => dropDownElement.CycleLeft())">&#8249;</button>
-                                                <span class="value" id="current-value">@dropDownElement.onGet()</span>
-                                                <button class="arrow right" onclick="@(() => dropDownElement.CycleRight())">&#8250;</button>
+                                                <button class="arrow left" onclick="@(() => cyclerElement.CycleLeft())">&#8249;</button>
+                                                <span class="value" id="current-value">@cyclerElement.onGet()</span>
+                                                <button class="arrow right" onclick="@(() => cyclerElement.CycleRight())">&#8250;</button>
                                             </div>
                                         </div>
                                     </div>
@@ -135,7 +135,7 @@
     }
 
     [ConCmd("open_options")]
-    static void OpenOptions()
+    public static void OpenOptions()
     {
         var inst = Game.ActiveScene.Components.Get<OptionsScreen>(true);
         if (inst != null)

@@ -49,18 +49,18 @@ public class UIGroup
 		return slider;
 	}
 
-	public UIDropDown<TEnum> AddDropDown<TEnum>(string displayName, Func<TEnum> getter, Action<TEnum> setter) where TEnum : Enum
+	public UICycler<TEnum> AddCycler<TEnum>(string displayName, Func<TEnum> getter, Action<TEnum> setter) where TEnum : Enum
 	{
-		var dropDown = new UIDropDown<TEnum>(displayName, getter, setter);
-		elements.Add(dropDown);
-		return dropDown;
+		var cycler = new UICycler<TEnum>(displayName, getter, setter);
+		elements.Add(cycler);
+		return cycler;
 	}
 
-	/*public UIDropDown AddDropDown(string displayName, List<string> options, Func<int> getter, Action<int> setter)
+	/*public UICycler AddCycler(string displayName, List<string> options, Func<int> getter, Action<int> setter)
 	{
-		var dropDown = new UIDropDown(displayName, options, getter, setter);
-		elements.Add(dropDown);
-		return dropDown;
+		var cycler = new Cycler(displayName, options, getter, setter);
+		elements.Add(cycler);
+		return cycler;
 	}*/
 }
 
@@ -104,12 +104,12 @@ public class UISlider : UIElement
 	}
 }
 
-public class UIDropDown<TEnum> : UIDropDownBase where TEnum : Enum
+public class UICycler<TEnum> : UICyclerBase where TEnum : Enum
 {
 	public Func<TEnum> getter { get; }
 	public Action<TEnum> setter { get; }
 
-	public UIDropDown(string displayName, Func<TEnum> getter, Action<TEnum> setter) : base(displayName)
+	public UICycler(string displayName, Func<TEnum> getter, Action<TEnum> setter) : base(displayName)
 	{
 		this.getter = getter;
 		this.setter = setter;
@@ -156,9 +156,9 @@ public class UIDropDown<TEnum> : UIDropDownBase where TEnum : Enum
 	}
 }
 
-public abstract class UIDropDownBase : UIElement
+public abstract class UICyclerBase : UIElement
 {
-	public UIDropDownBase(string displayName) : base(displayName)
+	public UICyclerBase(string displayName) : base(displayName)
 	{
 
 	}
@@ -171,13 +171,13 @@ public abstract class UIDropDownBase : UIElement
 }
 
 // Not sure if there is any point in supporting this
-/*public class UIDropDown : UIElement
+/*public class UICycler : UIElement
 {
 	public List<string> options { get; }
 	public Func<int> getter { get; }
 	public Action<int> setter { get; }
 
-	public UIDropDown(string displayName, List<string> options, Func<int> getter, Action<int> setter) : base(displayName)
+	public UICycler(string displayName, List<string> options, Func<int> getter, Action<int> setter) : base(displayName)
 	{
 		this.options = options;
 		this.getter = getter;

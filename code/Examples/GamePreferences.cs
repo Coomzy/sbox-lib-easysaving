@@ -44,7 +44,7 @@ public class GamePreferences : EasySave<GamePreferences>
 
 		var groupGamePlay = tab.AddGroup("Gameplay");
 
-		groupGamePlay.AddDropDown("Difficulty", () => difficulty, (value) => difficulty = value);
+		groupGamePlay.AddCycler("Difficulty", () => difficulty, (value) => difficulty = value);
 
 		return tab;
 	}

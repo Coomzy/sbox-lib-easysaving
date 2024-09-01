@@ -17,17 +17,7 @@ public class Test : Component
 	[Button("Test Audio")]
 	void Button_Test_Audio()
 	{
-		var inst = Game.ActiveScene.Components.Get<OptionsScreen>(true);
-		if (inst != null)
-		{
-			inst.Enabled = true;
-		}
-		else
-		{
-			var optionsScreenGO = Game.ActiveScene.CreateObject();
-			var screenPanel = optionsScreenGO.Components.Create<ScreenPanel>();
-			var optionsScreen = optionsScreenGO.Components.Create<OptionsScreen>();
-		}
+
 	}
 
 	[Button("Test Toggle Music")]

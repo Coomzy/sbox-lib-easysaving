@@ -11,12 +11,18 @@ public class AudioPreferences : EasySave<AudioPreferences>
 {
 	public bool muteMusic { get; set; }
 
-	public float gameVolume { get; set; } = 1.0f;
-	public float musicVolume { get; set; } = 0.35f;
-	public float uiVolume { get; set; } = 0.8f;
+	public float gameVolume { get; set; }
+	public float musicVolume { get; set; }
+	public float uiVolume { get; set; }
 
-	public VOIPMode voipMode { get; set; } = VOIPMode.PushToTalk;
-	public int voipIndex { get; set; } = 0;
+	public VOIPMode voipMode { get; set; }
+
+	protected override void SetDefaultValues()
+	{
+		gameVolume = 1.0f;
+		musicVolume = 0.35f;
+		uiVolume = 0.8f;
+	}
 
 	public void ApplyVolumesToMixers()
 	{
@@ -24,7 +30,6 @@ public class AudioPreferences : EasySave<AudioPreferences>
 		var mixerMusic = Mixer.FindMixerByName("Music");
 		var mixerUI = Mixer.FindMixerByName("UI");
 
-		//Log.Info($"mixerGame: {mixerGame}, mixerMusic: {mixerMusic}, mixerUI: {mixerUI}");
 		if (mixerGame != null)
 		{
 			mixerGame.Volume = gameVolume;
@@ -41,16 +46,37 @@ public class AudioPreferences : EasySave<AudioPreferences>
 
 	public void MuteMusic(bool mute)
 	{
-		muteMusic = mute;
-		ApplyVolumesToMixers();
+		SetMuteMusic(mute);
 		Save();
 	}
 
 	public void ToggleMusic()
 	{
-		muteMusic = !muteMusic;
+		MuteMusic(!muteMusic);
+	}
+
+	void SetMuteMusic(bool value)
+	{
+		muteMusic = value;
 		ApplyVolumesToMixers();
-		Save();
+	}
+
+	void SetGameVolumeValue(float value)
+	{
+		gameVolume = value;
+		ApplyVolumesToMixers();
+	}
+
+	void SetMusicVolumeValue(float value)
+	{
+		musicVolume = value;
+		ApplyVolumesToMixers();
+	}
+
+	void SetUIVolumeValue(float value)
+	{
+		uiVolume = value;
+		ApplyVolumesToMixers();
 	}
 
 	protected override UITab OnBuildUI()
@@ -63,32 +89,22 @@ public class AudioPreferences : EasySave<AudioPreferences>
 
 		// Add Toggle 'Mute Music'
 		groupToggles.AddToggle("Mute Music", () => muteMusic, (value) => muteMusic = value);
-		groupToggles.AddToggle("Mute Music", () => muteMusic, (value) => muteMusic = value);
-		groupToggles.AddToggle("Mute Music", () => muteMusic, (value) => muteMusic = value);
-		groupToggles.AddToggle("Mute Music", () => muteMusic, (value) => muteMusic = value);
 
 		// Add Group Volumes
 		var groupVolumes = tab.AddGroup("Volumes");
 
 		// Add Slider 'Game Volume'
-		groupVolumes.AddSlider("Game Volume", () => gameVolume, (value) => gameVolume = value);
+		groupVolumes.AddSlider("Game Volume", () => gameVolume, SetGameVolumeValue);
 		// Add Slider 'Music Volume'
-		groupVolumes.AddSlider("Music Volume", () => musicVolume, (value) => musicVolume = value);
+		groupVolumes.AddSlider("Music Volume", () => musicVolume, SetMusicVolumeValue);
 		// Add Slider 'UI Volume'
-		groupVolumes.AddSlider("UI Volume", () => uiVolume, (value) => uiVolume = value);
+		groupVolumes.AddSlider("UI Volume", () => uiVolume, SetUIVolumeValue);
 
 		// Add Group VOIP
 		var groupVOIP = tab.AddGroup("VOIP");
 
-		// Add Drop Down Selection 'VOIP'
-		groupVOIP.AddSlider("UI Volume", () => uiVolume, (value) => uiVolume = value);
-		groupVOIP.AddDropDown("VOIP Mode", () => voipMode, (value) => voipMode = value);
-		groupVOIP.AddToggle("Mute Music", () => muteMusic, (value) => muteMusic = value);
-
-		/*List<string> voipOptions = new List<string>();
-		voipOptions.Add("Push To Talk");
-		voipOptions.Add("Open");
-		groupVolumes.AddDropDown("VOIP Mode", voipOptions, () => voipIndex, (value) => voipIndex = value);*/
+		// Add Cycle Selection 'VOIP'
+		groupVOIP.AddCycler("VOIP Mode", () => voipMode, (value) => voipMode = value);
 
 		return tab;
 	}
