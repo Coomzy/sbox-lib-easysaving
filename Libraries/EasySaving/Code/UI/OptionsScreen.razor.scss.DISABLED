@@ -26,6 +26,26 @@ OptionsScreen {
 		margin: 20px 0px;
 	}
 
+	.button {
+		//flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+		flex-shrink: 0;
+		flex-grow: 0;
+		color: rgba(255,255,255, 0.9);
+		width: auto;
+		padding: 15px 32px;
+		text-align: center;
+		align-self: center;
+		font-size: 24px;
+		font-weight: 600;
+		margin: 20px;
+		gap: 0;
+		transition: all 50ms linear;
+		cursor: pointer;
+	}
+
+
 	> .container {
 		position: relative;
 		flex-direction: column;
@@ -48,7 +68,6 @@ OptionsScreen {
 		}
 
 		.content {
-			overflow-y: scroll;
 			padding: 5px;
 			flex-grow: 1;
 			flex-direction: column;
@@ -74,49 +93,62 @@ OptionsScreen {
 		// Buttons inside the content box
 		.buttons {
 			.button {
-				padding: 10px;
+				padding: 5px;
 				font-size: 30px;
 			}
 		}
 
 		&.tabs-container {
 			flex-grow: 0;
+			flex-shrink: 0;
+			overflow: hidden;
 		}
 
 		.tabs-group {
 			flex-direction: row;
 			align-items: center;
 			flex-grow: 0;
+
+			.button {
+				margin: 0 15px;
+				background-color: #242424;
+				// Can't remove this sound once it's set
+				// Use .inactive instead
+				&:hover {
+					//sound-in: ui.button.over;
+				}
+
+				&:hover {
+					background-color: #3B3B3B; //#EC594F;
+				}
+
+				&:active {
+					background-color: #6E6E6E33; //#D32F2F;
+				}
+
+				&.active {
+					background-color: #F44336;
+				}
+
+				&.inactive:hover {
+					sound-in: ui.button.over;
+				}
+			}
 		}
 	}
 
-	.button {
-		//flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
-		flex-shrink: 0;
-		flex-grow: 0;
-		color: rgba(255,255,255, 0.9);
-		width: auto;
-		border: 5px solid transparent;
-		border-radius: 0;
-		padding: 15px 32px;
-		text-align: center;
-		align-self: center;
-		font-size: 24px;
-		font-weight: 600;
-		// margin: 4px 2px;
-		margin: 0;
-		gap: 0;
-		transition: all 50ms linear;
-		cursor: pointer;
+	.content.tab-content {
+		// CONTENT ADD HERE
+
+		.button {
+			margin: 0;
+		}
+	}
+
+	.content.tab-content .button, .menu.buttons .button {
 
 		&:hover {
 			sound-in: ui.button.over;
-		}
-
-		&:active {
-			border: 5px solid black;
 		}
 
 		&.green {
@@ -168,6 +200,8 @@ OptionsScreen {
 		max-width: 1500px;
 		width: 85%;
 		font-size: 30px;
+		// TABLE ADD HERE
+		overflow-y: scroll;
 
 		.row {
 			flex-direction: row;

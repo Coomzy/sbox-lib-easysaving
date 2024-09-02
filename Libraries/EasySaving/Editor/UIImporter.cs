@@ -8,18 +8,31 @@ using Sandbox.Internal;
 
 public static class UIImporter
 {
-	[Event("localaddons.changed")]
-	public static void OnLibrarysChanged()
+	//[Event("localaddons.changed")]
+	[EditorEvent.Frame]
+	public static void CheckCookiePrompt()
 	{
-		Log.Info($"OnLibrarysChanged()");
 		if (ProjectCookie == null)
 		{
 			return;
 		}
+
 		var hasOfferedLibraryImport = ProjectCookie.Get("easysaving.hasOfferedLibraryImport", false);
-		if (hasOfferedLibraryImport)
+		if (!hasOfferedLibraryImport)
 		{
 			ProjectCookie.Set("easysaving.hasOfferedLibraryImport", true);
+
+			System.Reflection.MethodInfo saveMethod = ProjectCookie.GetType().GetMethod("Save", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+			if (saveMethod != null)
+			{
+				saveMethod.Invoke(ProjectCookie, null);
+			}
+			else
+			{
+				Log.Error("CookieContainer Method 'Save' not found");
+			}
+
 			OpenMyMenu();
 		}
 	}
@@ -27,7 +40,7 @@ public static class UIImporter
 	public static void OpenMyMenu()
 	{
 		var confirm = new PopupWindow(
-			"Import UI from Library?",
+			"Import UI from Library? (Easy Saving)",
 			"UI doesn't work in libraries, so if you want the options screens that comes with this library you need to import it into your project",
 			"No",
 			new Dictionary<string, Action>()
@@ -46,7 +59,7 @@ public static class UIImporter
 		string projectFolder = new System.IO.DirectoryInfo(Editor.FileSystem.ProjectSettings.GetFullPath("/")).FullName.Replace("ProjectSettings", "");
 
 		string source = $"{libraryFolder}code";
-		string target = $"{projectFolder}code";
+		string target = @$"{projectFolder}code\libraries";
 
 		string[] files = Directory.GetFiles(source, "*.DISABLED", SearchOption.AllDirectories);
 
