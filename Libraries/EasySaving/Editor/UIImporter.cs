@@ -8,44 +8,70 @@ using Sandbox.Internal;
 
 public static class UIImporter
 {
+	public static string stagingFolder => $@"{Project.Current.RootDirectory}\staging\easysaving";
+	public static string hasOfferedLibraryImportFilePath => $@"{stagingFolder}\hasOfferedLibraryImport.txt";
+	public static PopupWindow confirm = null;
+	public static bool hasCheckedForFile = false;
+	public static bool waitingForConfirmToGo = false;
+
 	//[Event("localaddons.changed")]
 	[EditorEvent.Frame]
 	public static void CheckCookiePrompt()
 	{
-		if (ProjectCookie == null)
+		if (waitingForConfirmToGo && confirm == null)
+		{
+			waitingForConfirmToGo = false;
+			OpenRestartPopup();
+		}
+
+		CheckFileExists();
+	}
+
+	public static void CheckFileExists()
+	{
+		if (hasCheckedForFile)
 		{
 			return;
 		}
+		hasCheckedForFile = true;
 
-		var hasOfferedLibraryImport = ProjectCookie.Get("easysaving.hasOfferedLibraryImport", false);
-		if (!hasOfferedLibraryImport)
+		if (File.Exists(hasOfferedLibraryImportFilePath))
 		{
-			ProjectCookie.Set("easysaving.hasOfferedLibraryImport", true);
-
-			System.Reflection.MethodInfo saveMethod = ProjectCookie.GetType().GetMethod("Save", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-			if (saveMethod != null)
-			{
-				saveMethod.Invoke(ProjectCookie, null);
-			}
-			else
-			{
-				Log.Error("CookieContainer Method 'Save' not found");
-			}
-
-			OpenMyMenu();
+			OpenRestartPopup();
+			return;
 		}
+
+		File.Create(hasOfferedLibraryImportFilePath);
+
+		OpenMyMenu();
 	}
 
 	public static void OpenMyMenu()
 	{
-		var confirm = new PopupWindow(
+		confirm = new PopupWindow(
 			"Import UI from Library? (Easy Saving)",
 			"UI doesn't work in libraries, so if you want the options screens that comes with this library you need to import it into your project",
 			"No",
 			new Dictionary<string, Action>()
 			{
 				{ "Yes", () => ImportDisabledLibraryFiles() }
+			}
+		);
+
+		confirm.DeleteOnClose = true;
+		confirm.Show();
+		waitingForConfirmToGo = true;
+	}
+
+	public static void OpenRestartPopup()
+	{
+		var confirm = new PopupWindow(
+			"Please restart editor after installing library",
+			"For some reason you ",
+			"Ok",
+			new Dictionary<string, Action>()
+			{
+
 			}
 		);
 
